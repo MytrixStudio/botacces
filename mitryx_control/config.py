@@ -70,7 +70,7 @@ def load_settings() -> Settings:
         server_config_channel_id=_int("SERVER_CONFIG_CHANNEL_ID"),
         server_api_key=_required("SERVER_API_KEY"),
         api_host=os.getenv("API_HOST", "0.0.0.0").strip() or "0.0.0.0",
-        api_port=_int("API_PORT", 8080),
+        api_port=int((os.getenv("PORT") or os.getenv("API_PORT") or "8080").strip()),
         database_path=Path(os.getenv("DATABASE_PATH", "data/mitryx.sqlite3")).expanduser(),
         trust_proxy_headers=_bool("TRUST_PROXY_HEADERS", False),
         rcon_host=os.getenv("RCON_HOST", "127.0.0.1").strip(),

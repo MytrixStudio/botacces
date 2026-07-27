@@ -7,7 +7,7 @@ Bot de Discord + API HTTP para controlar solicitudes de acceso del mod `menuMitr
 - Python 3.11 o superior.
 - Bot creado en Discord Developer Portal con Application ID `1530734359957471317`.
 - Los cinco canales configurados y visibles para el bot.
-- Un dominio con HTTPS para producción.
+- Un dominio con HTTPS para producción. El mod 2.1 viene preconfigurado para `https://botacces.onrender.com`.
 - RCON opcional para ejecutar comandos en Minecraft.
 
 ## 1. Crear el archivo `.env`
@@ -150,7 +150,6 @@ Cada solicitud crea un embed con:
 
 - nombre de Minecraft;
 - UUID;
-- Discord ID;
 - IP detectada;
 - botones **Aprobar** y **Rechazar**.
 
@@ -176,7 +175,6 @@ Panel persistente con botones **Agregar**, **Editar** y **Remover**. Los cliente
 SQLite usa modo WAL y guarda:
 
 - UUID y nombre de Minecraft;
-- Discord ID;
 - estado;
 - IP de solicitud, última IP del cliente e IP observada por el servidor;
 - administradores que aprobaron, banearon o desbanearon;
@@ -185,3 +183,14 @@ SQLite usa modo WAL y guarda:
 - registro de auditoría.
 
 Haz copias periódicas de `data/mitryx.sqlite3` y de sus archivos WAL/SHM con el proceso detenido o usando una herramienta compatible con SQLite.
+
+
+## Flujo automático del cliente 2.1
+
+El jugador no escribe ningún ID ni abre un formulario. Al pulsar **SOLICITAR JUGAR** o **JUGAR** sin aprobación, el mod envía automáticamente a la API:
+
+- UUID de Minecraft;
+- nick de Minecraft;
+- IP pública observada por Render.
+
+La API publica inmediatamente el panel con **Aprobar** y **Rechazar** en Discord. Para que Render entregue la IP real del jugador, usa `TRUST_PROXY_HEADERS=true`.

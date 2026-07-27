@@ -700,8 +700,7 @@ class MitryxBot(commands.Bot):
             color=discord.Color.gold(),
         )
         embed.add_field(name="Minecraft", value=record.minecraft_name, inline=True)
-        embed.add_field(name="UUID", value=f"`{record.minecraft_uuid}`", inline=False)
-        embed.add_field(name="Discord ID", value=f"`{record.discord_id}`", inline=True)
+        embed.add_field(name="ID de usuario (UUID)", value=f"`{record.minecraft_uuid}`", inline=False)
         embed.add_field(name="IP de solicitud", value=f"`{client_ip_label(record)}`", inline=True)
         embed.add_field(name="Estado", value=record.status, inline=True)
         embed.set_footer(text=f"Solicitada: {record.requested_at or 'desconocido'}")
@@ -714,8 +713,7 @@ class MitryxBot(commands.Bot):
             color=discord.Color.green(),
         )
         embed.add_field(name="Minecraft", value=record.minecraft_name, inline=True)
-        embed.add_field(name="Discord ID", value=f"`{record.discord_id}`", inline=True)
-        embed.add_field(name="UUID", value=f"`{record.minecraft_uuid}`", inline=False)
+        embed.add_field(name="ID de usuario (UUID)", value=f"`{record.minecraft_uuid}`", inline=False)
         embed.add_field(name="IP cliente/API", value=f"`{client_ip_label(record)}`", inline=True)
         embed.add_field(name="IP vista por servidor", value=f"`{server_ip_label(record)}`", inline=True)
         embed.add_field(name="Aprobado por", value=record.decided_by or "Desconocido", inline=False)
@@ -728,8 +726,7 @@ class MitryxBot(commands.Bot):
             color=discord.Color.red(),
         )
         embed.add_field(name="Minecraft", value=record.minecraft_name, inline=True)
-        embed.add_field(name="Discord ID", value=f"`{record.discord_id}`", inline=True)
-        embed.add_field(name="UUID", value=f"`{record.minecraft_uuid}`", inline=False)
+        embed.add_field(name="ID de usuario (UUID)", value=f"`{record.minecraft_uuid}`", inline=False)
         embed.add_field(name="IP baneada/RCON", value=f"`{player_ip(record)}`", inline=True)
         embed.add_field(name="IP vista por servidor", value=f"`{server_ip_label(record)}`", inline=True)
         embed.add_field(name="Motivo", value=record.ban_reason or "Sin motivo", inline=False)

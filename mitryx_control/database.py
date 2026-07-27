@@ -119,7 +119,6 @@ class Database:
         self,
         minecraft_uuid: str,
         minecraft_name: str,
-        discord_id: str,
         request_ip: str,
     ) -> tuple[PlayerRecord, bool]:
         async with self._lock:
@@ -162,9 +161,9 @@ class Database:
                     approved_message_id = NULL,
                     banned_message_id = NULL
                 """,
-                (minecraft_uuid, minecraft_name, discord_id, request_ip, request_ip, now),
+                (minecraft_uuid, minecraft_name, "", request_ip, request_ip, now),
             )
-            self._audit_locked("request_submitted", minecraft_uuid, discord_id, f"ip={request_ip}")
+            self._audit_locked("request_submitted", minecraft_uuid, "minecraft-client", f"ip={request_ip}")
             self.connection.commit()
             created = self.connection.execute(
                 "SELECT * FROM players WHERE minecraft_uuid = ?", (minecraft_uuid,)

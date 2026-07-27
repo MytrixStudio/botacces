@@ -17,7 +17,6 @@ from .config import Settings
 from .database import Database
 
 LOGGER = logging.getLogger(__name__)
-DISCORD_ID_RE = re.compile(r"^\d{15,24}$")
 
 
 class IdentityPayload(BaseModel):
@@ -42,15 +41,7 @@ class IdentityPayload(BaseModel):
 
 
 class RequestPayload(IdentityPayload):
-    discord_id: str
-
-    @field_validator("discord_id")
-    @classmethod
-    def validate_discord_id(cls, value: str) -> str:
-        value = value.strip()
-        if not DISCORD_ID_RE.fullmatch(value):
-            raise ValueError("ID de Discord inválido")
-        return value
+    pass
 
 
 class ServerAuthorizePayload(IdentityPayload):
@@ -89,15 +80,13 @@ class SlidingWindowLimiter:
 
 
 def create_api(settings: Settings, database: Database, bot: MitryxBot) -> FastAPI:
-    app = FastAPI(title="Mitryx Access API", version="2.0.0")
+    app = FastAPI(title="Mitryx Access API", version="2.1.0")
     request_limiter = SlidingWindowLimiter(limit=3, window_seconds=60)
     status_limiter = SlidingWindowLimiter(limit=60, window_seconds=60)
 
     def client_ip(request: Request) -> str:
-        if settings.trust_proxy_headers:
-            forwarded = request.headers.get("x-forwarded-for", "")
-            if forwarded:
-                return normalize_ip(forwarded.split(",", 1)[0])
+        # Uvicorn normaliza request.client cuando proxy_headers está habilitado.
+        # No analizamos X-Forwarded-For manualmente para evitar confiar dos veces en la cabecera.
         return normalize_ip(request.client.host if request.client else "")
 
     def response_for(status: str, server_address: str = "") -> dict[str, str]:
@@ -113,6 +102,10 @@ def create_api(settings: Settings, database: Database, bot: MitryxBot) -> FastAP
             "server_address": server_address if status == "approved" else "",
             "message": messages.get(status, "Estado desconocido."),
         }
+
+    @app.get("/")
+    async def root() -> dict[str, str]:
+        return {"status": "ok", "service": "Mitryx Access API", "version": "2.1.0"}
 
     @app.get("/health")
     async def health() -> dict[str, str]:
@@ -143,7 +136,6 @@ def create_api(settings: Settings, database: Database, bot: MitryxBot) -> FastAP
         record, created = await database.submit_request(
             payload.minecraft_uuid,
             payload.minecraft_name,
-            payload.discord_id,
             ip,
         )
         if created or (record.status == "pending" and not record.request_message_id):
