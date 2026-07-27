@@ -1,0 +1,7 @@
+# Fragmento para el servidor Minecraft dedicado
+online-mode=true
+white-list=true
+enforce-whitelist=true
+enable-rcon=true
+rcon.port=25575
+rcon.password=CAMBIA_ESTA_PASSWORD
